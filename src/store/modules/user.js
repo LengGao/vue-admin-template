@@ -7,6 +7,9 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
+  gender: '',
+  tel: '',
+  position: '',
   roles: []
 }
 

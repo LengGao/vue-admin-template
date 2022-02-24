@@ -84,7 +84,7 @@
       <el-table-column label="状态" class-name="status-col" width="120">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusFilter">
-            {{ statusOptionsTest[row.status] }}
+            {{ statusOptionsTest[row.status] || '离职' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -232,8 +232,8 @@ export default {
       unitOptions: [1, 2, 3, 4, 5, 6],
       floorsOptions: [1, 2, 3, 4, 5, 6, 7, 8 , 9, 10],
       buildingOptions: [1, 2, 3, 4, 5, 6, 7, 8 , 9, 10],
-      statusOptions: ['published', 'draft', 'deleted'],
-      statusOptionsTest: { published: '在职', draft: '离职', deleted: '禁用' },
+      statusOptions: ['published', 'draft'],
+      statusOptionsTest: { published: '在职', draft: '离职'},
       typeOptions: ['one', 'two'],
       typeOptionsTest: { one: '业主', two: '物业' },
       genders: ['女', '男'],
@@ -402,9 +402,9 @@ export default {
     },
     handleDelete(row, index) {
       let data = {id: row.uid, source: 'yonghu'}
+      let cu = this.$store.getters.token
+      let loginout = parseInt(cu) === parseInt(row.uid) ? true : false
       this.list.splice(index, 1)
-      let cu = this.$store.getters.tokens
-      let loginout = parseInt(cu) === parseInt(row.id) ? true : false
       deleteArticle(data).then(() =>{
         this.$notify({
           message: '删除成功',
@@ -412,9 +412,8 @@ export default {
           duration: 2000
         })
         if (loginout) {
-          this.$store.dispatch('user/logout').then(() => {
-            this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-          })
+          this.$store.dispatch('user/logout')
+          this.$router.push(`/login?redirect=${this.$route.fullPath}`)
         }
       })
     },

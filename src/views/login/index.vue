@@ -59,7 +59,7 @@
           <el-input v-model="temp.password" placeholder="请输入" maxlength="18" />
         </el-form-item>
         <el-form-item label="身份证" prop="IDcard">
-          <el-input v-model.number="temp.IDcard" placeholder="请输入" />
+          <el-input v-model.number="temp.IDcard" placeholder="请输入" maxlength="18"  />
         </el-form-item>
         <el-form-item label="性别" prop="gender">
           <el-select v-model="temp.gender" class="filter-item" placeholder="请选择">
@@ -136,8 +136,8 @@ export default {
       unitOptions: [1, 2, 3, 4, 5, 6],
       floorsOptions: [1, 2, 3, 4, 5, 6, 7, 8 , 9, 10],
       buildingOptions: [1, 2, 3, 4, 5, 6, 7, 8 , 9, 10],
-      statusOptions: ['published', 'draft', 'deleted'],
-      statusOptionsTest: { published: '在职', draft: '离职', deleted: '禁用' },
+      statusOptions: ['published', 'draft'],
+      statusOptionsTest: { published: '在职', draft: '离职'},
       typeOptions: ['one', 'two'],
       typeOptionsTest: { one: '业主', two: '物业' },
       genders: ['女', '男'],

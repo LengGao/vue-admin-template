@@ -258,8 +258,16 @@ export default {
   },
   methods: {
    getALL() {
+     let t = this.$store.getters.type === 'one' ?  true : false,
+         u = this.$store.getters.token
       all().then(res => {
-        this.users = res.data
+        if (t) {
+          this.users = res.data.filter(item => {
+            return item.uid === parseInt(u)
+          })
+        } else {
+          this.users = res.data 
+        }
       }).catch(e => {
         this.$message({
           message: '获取用户数据失败',

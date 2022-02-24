@@ -16,7 +16,7 @@ router.beforeEach(async(to, from, next) => {
 
   // set page title
   document.title = getPageTitle(to.meta.title)
-
+  
   // determine whether the user has logged in
   const hasToken = getToken()
 
@@ -66,6 +66,13 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     }
   }
+
+  // console.log("path",to.path);
+  // if (to.path === '/resgister') {  
+  //   next(`/login?redirect=${to.path}`)
+  //   NProgress.done()
+  // }
+
 })
 
 router.afterEach(() => {

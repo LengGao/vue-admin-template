@@ -39,7 +39,7 @@
         title="You can change the language of the admin system to see the effect"
         type="success"
       />
-      <markdown-editor ref="markdownEditor" v-model="content4" :language="language" height="300px" />
+      <!-- <markdown-editor ref="markdownEditor" v-model="content4" :language="language" height="300px" /> -->
     </div>
 
     <el-button style="margin-top:80px;" type="primary" icon="el-icon-document" @click="getHtml">

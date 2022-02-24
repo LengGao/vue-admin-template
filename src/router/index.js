@@ -20,6 +20,10 @@ import Layout from '@/layout'
  * alwaysShow: true               if set true, will always show the root menu
  *                                if not set alwaysShow, when item has more than one children route,
  *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumbhidden: true                   if set true, item will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu
+ *                                if not set alwaysShow, when item has more than one children route,
+ *                                it will becomes nested mode, otherwise not show the root menu
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
@@ -52,9 +56,20 @@ export const constantRoutes = [
   },
   {
     path: '/login',
+    hidden: true,
     component: () => import('@/views/login/index'),
-    hidden: true
   },
+  // {
+  //   path: '/resgister',
+  //   redirect: '/resgister',
+  //   children: [
+  //     {
+  //       path: '/resgister',
+  //       name: 'resgister',
+  //       component: () => import('@/views/resgister/index'),
+  //     }
+  //   ]
+  // },
   {
     path: '/auth-redirect',
     component: () => import('@/views/login/auth-redirect'),
@@ -71,18 +86,10 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/',
-    name: '房屋系统',
-    meta: { title: '房屋系统' },
-    redirect: '/loudong',
+    path: '/',  
+    redirect: '/fangwu',
     component: Layout,
     children: [
-      {
-        path: '/loudong',
-        name: '楼栋管理',
-        meta: { title: '楼栋管理' },
-        component: () => import('@/pages/loudong')
-      },
       {
         path: '/fangwu',
         name: '房屋管理',
@@ -463,11 +470,11 @@ export const asyncRoutes = [
   //     }
   //   ]
   // },
-
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+console.log("constantRoutes",constantRoutes);
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),

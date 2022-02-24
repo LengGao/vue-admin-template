@@ -2,15 +2,8 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.author"
+        v-model="listQuery.name"
         placeholder="业主"
-        style="width: 200px"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.reviewer"
-        placeholder="负责人"
         style="width: 200px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -72,46 +65,39 @@
       style="width: 100%"
       @sort-change="sortChange"
     >
-      <el-table-column
-        label="ID"
-        prop="id"
-        sortable="custom"
-        align="center"
-        width="100"
-        :class-name="getSortClass('id')"
-      >
-        <template slot-scope="{ row }">
-          <span>{{ row.id }}</span>
+      <el-table-column label="ID" prop="jid" sortable="custom" align="center" width="100" :class-name="getSortClass('id')">
+        <template slot-scope="{row}">
+          <span>{{ row.jid }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="单元号" width="100" align="center">
+      <el-table-column label="单元" width="120" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.unit }}</span>
+          <span>{{ row.unti }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="楼栋号" width="100" align="center">
+      <el-table-column label="楼栋" width="120" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.building }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="楼层数" width="100px" align="center">
+      <el-table-column label="楼层" width="120" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.floors }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="门牌号" width="100" align="center">
+      <el-table-column label="门牌号" width="120" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.house }}</span>
         </template>
       </el-table-column>
       <el-table-column label="业主" width="120" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.author }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="联系方式" width="150" align="center">
+      <el-table-column label="联系方式" width="120" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.atel }}</span>
+          <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
       <el-table-column label="物业费" width="150" align="center">
@@ -131,19 +117,7 @@
       </el-table-column>
       <el-table-column label="水费" width="150" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.water_change }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="负责人" width="120" align="center">
-        <template slot-scope="{ row }">
-          <span style="color: red">{{ row.reviewer }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" width="200" align="center">
-        <template slot-scope="{ row }">
-          <span>{{
-            row.buy_timestamp | parseTime("{y}-{m}-{d} {h}:{i}")
-          }}</span>
+          <span>{{ row.water_charge }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" width="120">
@@ -191,83 +165,72 @@
         label-width="120px"
         style="width: 600px; margin-left: 50px"
       >
-        <el-form-item label="单元号" prop="unit">
-          <el-select
-            v-model="temp.unit"
-            class="filter-item"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in unitOptions"
-              :key="item"
-              :label="item"
-              :value="item"
-            />
+        <el-form-item label="房屋" prop="fid">
+          <el-select v-model="temp.fid" class="filter-item" placeholder="请选择">
+            <el-option v-for="item in roons" :key="item.fid" :value="item.fid">
+              {{item.unti}}单元{{item.building}}楼{{item.floors}}层{{item.house}}号
+            </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="楼栋号" prop="building">
-          <el-select
-            v-model="temp.building"
-            class="filter-item"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in buildingOptions"
-              :key="item"
-              :label="item"
-              :value="item"
-            />
+        <el-form-item label="业主" prop="uid">
+          <el-select v-model="temp.uid" class="filter-item" placeholder="请选择">
+            <el-option v-for="item in users" :key="item.uid" :value="item.uid">
+              {{item.name}}-{{item.IDcard}}-{{item.tel}}
+            </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="楼层数" prop="floors">
-          <el-select
-            v-model="temp.floors"
-            class="filter-item"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in floorsOptions"
-              :key="item"
-              :label="item"
-              :value="item"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="门牌号" prop="house">
-          <el-input
-            v-model.number="temp.house"
-            class="filter-item"
-            placeholder="请输入"
-          />
-        </el-form-item>
-        <el-form-item label="业主" prop="author">
-          <el-input v-model="temp.author" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="业主联系方式" prop="atel">
-          <el-input v-model="temp.atel" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="负责人" prop="reviewer">
-          <el-input v-model="temp.reviewer" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="物业费" prop="author">
+        <el-form-item label="物业费" prop="name">
           <el-input v-model="temp.wuye_charge" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="燃气费" prop="author">
+      <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证" prop="wuye_pay_charge">
+        <el-upload class="avatar-uploader" action="/api/upload" list-type="picture-card"
+            name="wuye_pay_charge" multiple :show-file-list="false"
+            :limit="1" :headers="{ enctype: 'multipart/form-data' }" 
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+        <el-image v-if="temp.wuye_pay_charge" class="avatar" fit="fill" :src="temp.wuye_pay_charge"></el-image>
+        <!-- <el-image v-else class="avatar" fit="fill" :src="defaultAvator"></el-image> -->
+        </el-upload>
+      </el-form-item>
+        <el-form-item label="燃气费" prop="name">
           <el-input v-model="temp.ranqi_charge" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="电费" prop="author">
+      <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证" prop="ranqi_pay_charge">
+        <el-upload class="avatar-uploader" action="/api/upload" list-type="picture-card"
+            name="ranqi_pay_charge" multiple :show-file-list="false"
+            :limit="1" :headers="{ enctype: 'multipart/form-data' }" 
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+        <el-image v-if="temp.ranqi_pay_charge" class="avatar" fit="fill" :src="temp.ranqi_pay_charge"></el-image>
+        <!-- <el-image v-else class="avatar" fit="fill" :src="defaultAvator"></el-image> -->
+        </el-upload>
+      </el-form-item>
+        <el-form-item label="电费" prop="name">
           <el-input v-model="temp.electric_charge" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="水费" prop="author">
-          <el-input v-model="temp.weter_charge" placeholder="请输入" />
+      <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证" prop="electric_pay_charge">
+        <el-upload class="avatar-uploader" action="/api/upload" list-type="picture-card"
+            name="electric_pay_charge" multiple :show-file-list="false"
+            :limit="1" :headers="{ enctype: 'multipart/form-data' }" 
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+        <el-image v-if="temp.electric_pay_charge" class="avatar" fit="fill" :src="temp.electric_pay_charge"></el-image>
+        <!-- <el-image v-else class="avatar" fit="fill" :src="defaultAvator"></el-image> -->
+        </el-upload>
+      </el-form-item>
+        <el-form-item label="水费" prop="name">
+          <el-input v-model="temp.water_charge" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="创建时间" prop="buy_timestamp">
-          <el-date-picker
-            v-model="temp.buy_timestamp"
-            type="datetime"
-            placeholder="请选择"
-          />
-        </el-form-item>
+      <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证" prop="water_pay_charge">
+        <el-upload class="avatar-uploader" action="/api/upload" list-type="picture-card"
+            name="water_pay_charge" multiple :show-file-list="false"
+            :limit="1" :headers="{ enctype: 'multipart/form-data' }" 
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+        <el-image v-if="temp.water_pay_charge" class="avatar" fit="fill" :src="temp.water_pay_charge"></el-image>
+        <!-- <el-image v-else class="avatar" fit="fill" :src="defaultAvator"></el-image> -->
+        </el-upload>
+      </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select
             v-model="temp.status"
@@ -283,17 +246,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证">
-          <div class="image-box">
-            <el-image
-              v-if="temp.status == 'published'"
-              style="width: 100px; height: 100px"
-              :preview-src-list="previewImage"
-              :src="temp.pay_charge"
-            ></el-image>
-          </div>
-          <el-button type="primary" icon="el-icon-upload" @click="uploadImage">上传凭证</el-button>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false"> 取消 </el-button>
@@ -305,18 +257,6 @@
         </el-button>
       </div>
     </el-dialog>
-
-    <image-cropper
-      v-show="imagecropperShow"
-      :key="'i_' + imagecropperKey"
-      :width="300"
-      :height="300"
-      lang-type="en"
-      :withCredentials="true"
-      url="http://192.168.0.100:9527/public/"
-      @close="close"
-      @crop-upload-success="cropSuccess"
-    />
   </div>
 </template>
 
@@ -326,7 +266,9 @@ import {
   fetchPv,
   createArticle,
   updateArticle,
+  deleteArticle
 } from "@/api/article";
+import { all, rAll } from '@/api/user'
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -369,11 +311,12 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      defaultAvator: 'https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191',
       listQuery: {
         page: 1,
         limit: 20,
-        author: undefined,
-        reviewer: undefined,
+        source: 'jiaofei',
+        name: '',
         status: "",
         sort: "+id",
       },
@@ -397,22 +340,27 @@ export default {
       showReviewer: false,
       showRemark: false,
       detailInfo: { title: "", remark: "" },
+      roons: [],
+      users: [],
       temp: {
-        id: undefined,
-        unit: "",
+        source: 'jiaofei',
+        jid: undefined,
+        fid: undefined,
+        unti: "",
         building: "",
         floors: "",
         house: "",
         uid: "",
-        author: "",
-        atel: "",
-        reviewer: "",
+        name: "",
+        tel: "",
         wuye_charge: "",
+        wuye_pay_charge: '',
         ranqi_charge: "",
+        ranqi_pay_charge: '',
         electric_charge: "",
-        water_change: "",
-        buy_timestamp: "",
-        pay_charge: "",
+        electric_pay_charge: '',
+        water_charge: "",
+        water_pay_charge: '',
         status: "draft",
       },
       dialogFormVisible: false,
@@ -424,41 +372,19 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        unit: [
+        uid: [
           {
-            type: "number",
             required: true,
-            message: "unit is required",
-            trigger: "change",
-          },
+            message: "uid is required",
+            trigger: "blur",
+          }
         ],
-        building: [
+        fid: [
           {
-            type: "number",
             required: true,
-            message: "building is required",
-            trigger: "change",
-          },
-        ],
-        floors: [
-          {
-            type: "number",
-            required: true,
-            message: "floors is required",
-            trigger: "change",
-          },
-        ],
-        house: [
-          { type: "number", message: "house is required", trigger: "change" },
-        ],
-        author: [
-          { required: true, message: "author is required", trigger: "blur" },
-        ],
-        atel: [
-          { required: true, message: "atel is required", trigger: "blur" },
-        ],
-        reviewer: [
-          { required: true, message: "reviewer is required", trigger: "blur" },
+            message: "fid is required",
+            trigger: "blur",
+          }
         ],
         wuye_charge: [
           {
@@ -488,14 +414,6 @@ export default {
             trigger: "blur",
           },
         ],
-        buy_timestamp: [
-          {
-            type: "date",
-            required: true,
-            message: "buy_timestamp is required",
-            trigger: "change",
-          },
-        ],
         status: [
           { required: true, message: "status is required", trigger: "change" },
         ],
@@ -509,7 +427,47 @@ export default {
   created() {
     this.getList();
   },
+  beforeMount() {
+    this.getALL()
+    this.getRall()
+  },
   methods: {
+   getALL() {
+     let t = this.$store.getters.type === 'one' ?  true : false,
+         u = this.$store.getters.token
+      all().then(res => {
+        if (t) {
+          this.users = res.data.filter(item => {
+            return item.uid === parseInt(u)
+          })
+        } else {
+          this.users = res.data 
+        }
+      }).catch(e => {
+        this.$message({
+          message: '获取用户数据失败',
+          type: 'error',
+        })
+      })
+    },
+    getRall() {
+     let t = this.$store.getters.type === 'one' ? true : false,
+         u = this.$store.getters.token
+     rAll().then(res => {
+        if (t) {
+          this.roons = res.data.filter(item => {
+            return item.uid === parseInt(u)
+          })
+        } else {
+          this.roons = res.data
+        }
+      }).catch(e => {
+        this.$message({
+          message: '获取用户数据失败',
+          type: 'error',
+        })
+      })
+    },
     getList() {
       this.listLoading = true;
       fetchList(this.listQuery).then((response) => {
@@ -528,7 +486,7 @@ export default {
     },
     handleModifyStatus(row, status) {
       this.$message({
-        message: "操作Success",
+        message: "操作成功",
         type: "success",
       });
       row.status = status;
@@ -549,22 +507,25 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        unit: "",
+        source: 'jiaofei',
+        jid: undefined,
+        fid: undefined,
+        unti: "",
         building: "",
         floors: "",
         house: "",
         uid: "",
-        author: "",
-        atel: "",
-        reviewer: "",
+        name: "",
+        tel: "",
         wuye_charge: "",
+        wuye_pay_charge: '',
         ranqi_charge: "",
+        ranqi_pay_charge: '',
         electric_charge: "",
-        water_change: "",
-        buy_timestamp: "",
-        pay_charge: "",
-        status: "",
+        electric_pay_charge: '',
+        water_charge: "",
+        water_pay_charge: '',
+        status: "draft",
       };
     },
     handleCreate() {
@@ -580,23 +541,25 @@ export default {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
           this.temp.createBy = this.$store.getters.name;
+          this.temp.source = 'jiaofei'
           createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp);
+            // this.list.unshift(this.temp);
             this.dialogFormVisible = false;
             this.$notify({
               title: "Success",
-              message: "Created Successfully",
+              message: "T添加成功",
               type: "success",
               duration: 2000,
             });
+            this.$nextTick(() => {
+              this.getList()
+            })
           });
         }
       });
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp);
-      console.log(this.temp);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -612,29 +575,41 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
-          tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          // tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.source = 'jiaofei'
+          tempData.status = 'published'
+          // if (tempData.buy_timestamp) {
+          //   tempData.buy_timestamp = parseTime(tempData.buy_timestamp)
+          // } else if (tempData.use_timestamp) {
+          //   tempData.buy_timestamp = parseTime(tempData.use_timestamp)
+          // }
           updateArticle(tempData).then(() => {
             const index = this.list.findIndex((v) => v.id === this.temp.id);
             this.list.splice(index, 1, this.temp);
             this.dialogFormVisible = false;
             this.$notify({
               title: "Success",
-              message: "Update Successfully",
+              message: "更行成功",
               type: "success",
               duration: 2000,
             });
+            this.$nextTick(() => {
+              this.getList()
+            })
           });
         }
       });
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: "Success",
-        message: "Delete Successfully",
-        type: "success",
-        duration: 2000,
-      });
-      this.list.splice(index, 1);
+      let data = {id: row.jid, source: 'jiaofei'}
+      this.list.splice(index, 1)
+      deleteArticle(data).then(() =>{
+        this.$notify({
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
     handleFetchPv(pv) {
       fetchPv(pv).then((response) => {
@@ -677,19 +652,41 @@ export default {
       const sort = this.listQuery.sort;
       return sort === `+${key}` ? "ascending" : "descending";
     },
-    cropSuccess(resData) {
-      this.imagecropperShow = false;
-      this.imagecropperKey = this.imagecropperKey + 1;
-      this.temp.image = resData.files.avatar;
-      this.temp.status = "published";
-      this.previewImage = [resData.files.avatar]
+    beforeAvatarUpload(file) {
+      // console.log("handleAvatarSuccess", file);
+      const types = ['image/jpeg', 'image/jpg', 'image/jpng', 'image/png', 'image/gif']
+      const isJPG = types.includes(file.type)
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是jpg、jpeg、jpng、png、gif 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
     },
-    close() {
-      this.imagecropperShow = false;
+    handleAvatarSuccess(file) {
+      console.log("handleAvatarSuccess", file);
+      this.temp[file.data[0].fieldname] = file.data[0].url;
     },
-    uploadImage() {
-      this.imagecropperShow = true;
+    handlePreview(file) {
+      console.log("handlePreview",file);
     },
+    handleError() {
+      this.$message({
+        message: "上传失败",
+        type: "error"
+      })
+    }
   },
 };
 </script>
+
+<style scoped>
+  .avatar {
+    position: relative;
+    top: 0;
+    width: 140px;
+    height: 150px;
+  }
+</style>

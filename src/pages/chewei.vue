@@ -2,8 +2,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-       <el-input v-model="listQuery.author" placeholder="车为主" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.unit" placeholder="单元" style="width: 140px" class="filter-item" @change="handleFilter">
+       <el-input v-model="listQuery.name" placeholder="车为主" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.unti" placeholder="单元" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in unitOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.type" placeholder="类型" style="width: 140px" class="filter-item" @change="handleFilter">
@@ -33,14 +33,14 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="100" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="cid" sortable="custom" align="center" width="100" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+          <span>{{ row.cid }}</span>
         </template>
       </el-table-column>
       <el-table-column label="单元号" width="100" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.unit }}</span>
+          <span>{{ row.unti }}</span>
         </template>
       </el-table-column>
       <el-table-column label="楼栋号" width="100" align="center">
@@ -55,27 +55,24 @@
       </el-table-column>
       <el-table-column label="车位主" width="120" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="车位主联系方式" width="150" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.atel }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="经办人" width="120" align="center">
-        <template slot-scope="{row}">
-          <span style="color:red;">{{ row.reviewer }}</span>
+          <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
       <el-table-column label="启用时间" width="200" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.buy_timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span v-if="row.buy_timestamp"> {{ row.buy_timestamp | parseTime('{y}-{m}-{d}') }}</span>
+          <span v-else> </span>
         </template>
       </el-table-column>
       <el-table-column label="到期时间" width="200" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.use_timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span v-if="row.use_timestamp">{{ row.use_timestamp | parseTime('{y}-{m}-{d}') }}</span>
+          <span v-else> </span>
         </template>
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" width="120">
@@ -101,8 +98,8 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="单元号" prop="unit">
-          <el-select v-model="temp.unit" class="filter-item" placeholder="请选择">
+        <el-form-item label="单元号" prop="unti">
+          <el-select v-model="temp.unti" class="filter-item" placeholder="请选择">
             <el-option v-for="item in unitOptions" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
@@ -116,20 +113,18 @@
             <el-option v-for="item in typeOptions" :key="item" :label="typeOptionsTest[item]" :value="item" />
           </el-select>
         </el-form-item>
-        <el-form-item label="车位主" prop="author">
-          <el-input v-model="temp.author" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="车位主联系方式" prop="atel">
-          <el-input v-model="temp.atel" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="经办人" prop="reviewer">
-          <el-input v-model="temp.reviewer" placeholder="请输入" />
+        <el-form-item label="业主" prop="uid">
+          <el-select v-model="temp.uid" class="filter-item" placeholder="请选择">
+            <el-option v-for="item in users" :key="item.uid" :value="item.uid">
+              {{item.name}}-{{item.IDcard}}-{{item.tel}}
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="启用时间" prop="buy_timestamp">
-          <el-date-picker v-model="temp.buy_timestamp" type="datetime" placeholder="请选择" />
+          <el-date-picker v-model="temp.buy_timestamp" type="date" value-format="yyyy-MM-dd" placeholder="请选择" />
         </el-form-item>
-        <el-form-item label="到期时间" prop="buy_timestamp">
-          <el-date-picker v-model="temp.buy_timestamp" type="datetime" placeholder="请选择" />
+        <el-form-item label="到期时间" prop="use_timestamp">
+          <el-date-picker v-model="temp.use_timestamp" type="date" value-format="yyyy-MM-dd" placeholder="请选择" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="temp.status" class="filter-item" placeholder="请选择">
@@ -157,10 +152,12 @@
       </span>
     </el-dialog>
   </div>
+
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import { fetchList, fetchPv, createArticle, updateArticle, deleteArticle} from '@/api/article'
+import { all } from '@/api/user'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -204,8 +201,9 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        author: '',
-        unit: '',
+        source: 'chewei',
+        name: '',
+        unti: '',
         type: '',
         status: '',
         sort: '+id'
@@ -221,17 +219,17 @@ export default {
       typeOptions: ['one', 'two'],
       typeOptionsTest: { one: '买断', two: '租赁' },
       showReviewer: false,
+      users: [],
       temp: {
-        id: undefined,
-        type: '',
-        unit: '',
+        source: 'chewei',
+        cid: undefined,
+        unti: '',
         building: '',
-        author: '',
-        atel: '',
-        reviewer: '',
+        type: '',
         buy_timestamp: '',
         use_timestamp: '',
-        status: ''
+        status: '',
+        uid: undefined,
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -242,14 +240,11 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {        
-        unit: [{ type: 'number', required: true, message: 'unit is required', trigger: 'change' }],
+        unti: [{ type: 'number', required: true, message: 'unti is required', trigger: 'change' }],
         building: [{ type: 'number', required: true, message: 'building is required', trigger: 'change' }],
         type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        author: [{ required: true, message: 'author is required', trigger: 'blur' }],
-        atel: [{ required: true, message: 'atel is required', trigger: 'blur' }],
-        reviewer: [{ required: true, message: 'reviewer is required', trigger: 'blur' }],
-        buy_timestamp: [{ type: 'date', required: true, message: 'buy_timestamp is required', trigger: 'change' }],
-        use_timestamp: [{ type: 'date', required: true, message: 'use_timestamp is required', trigger: 'change' }],
+        // buy_timestamp: [{ type: 'date', required: true, message: 'buy_timestamp is required', trigger: 'change' }],
+        // use_timestamp: [{ type: 'date', required: true, message: 'use_timestamp is required', trigger: 'change' }],
         status: [{ required: true, message: 'status is required', trigger: 'change' }]
       },
       downloadLoading: false
@@ -258,14 +253,25 @@ export default {
   created() {
     this.getList()
   },
+  beforeMount() {
+    this.getALL()
+  },
   methods: {
+   getALL() {
+      all().then(res => {
+        this.users = res.data
+      }).catch(e => {
+        this.$message({
+          message: '获取用户数据失败',
+          type: 'error',
+        })
+      })
+    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
-
-        // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
@@ -277,7 +283,7 @@ export default {
     },
     handleModifyStatus(row, status) {
       this.$message({
-        message: '操作Success',
+        message: '操作成功',
         type: 'success'
       })
       row.status = status
@@ -298,16 +304,15 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        type: '',
-        unit: '',
+        source: 'chewei',
+        cid: undefined,
+        unti: '',
         building: '',
-        author: '',
-        atel: '',
-        reviewer: '',
+        type: '',
         buy_timestamp: '',
         use_timestamp: '',
-        status: ''
+        status: '',
+        uid: undefined,
       }
     },
     handleCreate() {
@@ -323,14 +328,18 @@ export default {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           this.temp.createBy = this.$store.getters.name
+          this.temp.source = 'chewei'
           createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
+            // this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
+              
+              message: 'T添加成功',
               type: 'success',
               duration: 2000
+            })
+            this.$nextTick(() => {
+              this.getList()
             })
           })
         }
@@ -338,7 +347,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      this.temp.save = 'CheWei'
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -349,29 +358,41 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          // tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.source = 'chewei'
+          if (tempData.buy_timestamp) {
+            tempData.buy_timestamp = parseTime(tempData.buy_timestamp)
+          } else if (tempData.use_timestamp) {
+            tempData.buy_timestamp = parseTime(tempData.use_timestamp)
+          }
           updateArticle(tempData).then(() => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              
+              message: '更行成功',
               type: 'success',
               duration: 2000
+            })
+            this.$nextTick(() => {
+              this.getList
             })
           })
         }
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
-      })
+      let data = {id: row.cid, source: 'chewei'}
       this.list.splice(index, 1)
+      deleteArticle(data).then(() =>{
+        this.$notify({
+          
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {

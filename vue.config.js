@@ -36,16 +36,15 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    // proxyTable: {
-    //   '/apiwx': {
-    //     // 测试环境
-    //     target: 'http://localhost:9527',  // 接口域名
-    //     changeOrigin: true,  //是否跨域
-    //     pathRewrite: {
-    //       '^/apiwx': ''   //请求后端的路径不带/apiwx这里重写值为空
-    //   }
-    // },
-    before: require('./mock/mock-server.js')
+    proxy: {
+      [process.env.VUE_APP_BASE_API]: {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        // pathRewrite: { '^/api': '' } // 希望请求不带api
+        pathRewrite: { ['^' + process.env.VUE_APP_BASE_API]: '' }
+      }
+    },
+    // before: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

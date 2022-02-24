@@ -248,7 +248,7 @@ export default {
     },
     handleModifyStatus(row, status) {
       this.$message({
-        message: '操作Success',
+        message: '操作成功',
         type: 'success'
       })
       row.status = status
@@ -295,8 +295,8 @@ export default {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
+              
+              message: 'T添加成功',
               type: 'success',
               duration: 2000
             })
@@ -323,8 +323,8 @@ export default {
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
+              
+              message: '更行成功',
               type: 'success',
               duration: 2000
             })
@@ -334,8 +334,8 @@ export default {
     },
     handleDelete(row, index) {
       this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
+        
+        message: '删除成功',
         type: 'success',
         duration: 2000
       })

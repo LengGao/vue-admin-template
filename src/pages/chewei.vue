@@ -38,12 +38,12 @@
           <span>{{ row.cid }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="单元号" width="100" align="center">
+      <el-table-column label="车位号" width="100" align="center">
         <template slot-scope="{row}">
           <span>{{ row.unti }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="楼栋号" width="100" align="center">
+      <el-table-column label="区域号" width="100" align="center">
         <template slot-scope="{row}">
           <span>{{ row.building }}</span>
         </template>
@@ -100,7 +100,7 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px" style="width: 400px; margin-left:50px;">
         <el-form-item label="单元号" prop="unti">
           <el-select v-model="temp.unti" class="filter-item" placeholder="请选择">
-            <el-option v-for="item in unitOptions" :key="item" :label="item" :value="item" />
+            <el-option v-for="item in unitOptions" :key="'U_' +item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="楼栋号" prop="building">
@@ -213,7 +213,7 @@ export default {
       sortOptions: [{ label: 'ID 升序', key: '+id' }, { label: 'ID 降序', key: '-id' }],
       unitOptions: [1, 2, 3, 4, 5, 6],
       floorsOptions: [1, 2, 3, 4, 5, 6, 7, 8 , 9, 10],
-      buildingOptions: [1, 2, 3, 4, 5, 6, 7, 8 , 9, 10],
+      buildingOptions: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
       statusOptions: ['published', 'draft', 'deleted'],
       statusOptionsTest: { published: '已使用', draft: '未使用', deleted: '禁用' },
       typeOptions: ['one', 'two'],
@@ -241,10 +241,8 @@ export default {
       pvData: [],
       rules: {        
         unti: [{ type: 'number', required: true, message: 'unti is required', trigger: 'change' }],
-        building: [{ type: 'number', required: true, message: 'building is required', trigger: 'change' }],
+        building: [{ required: true, message: 'building is required', trigger: 'change' }],
         type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        // buy_timestamp: [{ type: 'date', required: true, message: 'buy_timestamp is required', trigger: 'change' }],
-        // use_timestamp: [{ type: 'date', required: true, message: 'use_timestamp is required', trigger: 'change' }],
         status: [{ required: true, message: 'status is required', trigger: 'change' }]
       },
       downloadLoading: false
@@ -369,9 +367,10 @@ export default {
           // tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           tempData.source = 'chewei'
           if (tempData.buy_timestamp) {
-            tempData.buy_timestamp = parseTime(tempData.buy_timestamp)
+            tempData.buy_timestamp = parseTime(tempData.buy_timestamp, '{y}-{m}-{d}')
           } else if (tempData.use_timestamp) {
-            tempData.buy_timestamp = parseTime(tempData.use_timestamp)
+            tempData.use_timestamp = parseTime(tempData.use_timestamp, '{y}-{m}-{d}')
+            console.log("use_timestamp");
           }
           updateArticle(tempData).then(() => {
             const index = this.list.findIndex(v => v.id === this.temp.id)

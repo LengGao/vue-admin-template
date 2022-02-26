@@ -16,7 +16,6 @@ service.interceptors.request.use(
     // do something before request is sent
 
     config.headers['X-Type'] = store.getters.type
-    console.log('store', store);
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key

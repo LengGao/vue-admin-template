@@ -61,6 +61,11 @@
           <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="联系方式" width="150" align="center">
+        <template slot-scope="{row}">
+          <span>{{ typeOptionsTest[row.type] }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="职位" width="120" align="center">
         <template slot-scope="{row}">
           <span style="color:red;">{{ row.position }}</span>
@@ -104,11 +109,6 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px" style="width: 400px; margin-left:50px;">
-        <!-- <el-form-item label="类型" prop="type">
-          <el-select v-model="temp.type" placeholder="类型" style="width: 140px" class="filter-item" @change="handleFilter">
-            <el-option v-for="item in typeOptions" :key="item" :label="typeOptionsTest[item]" :value="item" />
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="姓名" prop="name">
           <el-input v-model="temp.name" placeholder="请输入" />
         </el-form-item>
@@ -131,6 +131,7 @@
         <el-form-item label="联系方式" prop="tel">
           <el-input v-model="temp.tel" placeholder="请输入" />
         </el-form-item>
+        <template v-if="temp.type === 'two' || temp.type === 'super'">
         <el-form-item label="职位" prop="position">
           <el-input v-model="temp.position" placeholder="请输入" />
         </el-form-item>
@@ -143,6 +144,7 @@
         <el-form-item label="离职时间" prop="use_timestamp">
           <el-date-picker v-model="temp.use_timestamp" type="date" value-format="yyyy-MM-dd" placeholder="请选择" />
         </el-form-item>
+        </template>
         <el-form-item label="状态" prop="status">
           <el-select v-model="temp.status" class="filter-item" placeholder="请选择">
             <el-option v-for="item in statusOptions" :key="item" :label="statusOptionsTest[item]" :value="item" />
@@ -278,6 +280,7 @@ export default {
   },
   created() {
     this.getList()
+    this.power = this.$store.getters.type
   },
   methods: {
     getList() {
@@ -378,17 +381,16 @@ export default {
           const tempData = Object.assign({}, this.temp)
           // tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           tempData.source = 'yonghu'
-          if (tempData.buy_timestamp) {
-            tempData.buy_timestamp = parseTime(tempData.buy_timestamp)
+         if (tempData.buy_timestamp) {
+            tempData.buy_timestamp = parseTime(tempData.buy_timestamp, '{y}-{m}-{d}')
           } else if (tempData.use_timestamp) {
-            tempData.buy_timestamp = parseTime(tempData.use_timestamp)
+            tempData.use_timestamp = parseTime(tempData.use_timestamp, '{y}-{m}-{d}')
           }
           updateArticle(tempData).then(() => {
             const index = this.list.findIndex(v => v.uid === this.temp.uid)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
             this.$notify({
-              
               message: '更行成功',
               type: 'success',
               duration: 2000

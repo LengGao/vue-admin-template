@@ -182,7 +182,7 @@
         <el-form-item label="物业费" prop="name">
           <el-input v-model="temp.wuye_charge" placeholder="请输入" />
         </el-form-item>
-      <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证" prop="wuye_pay_charge">
+      <el-form-item label="上传缴费凭证" prop="wuye_pay_charge">
         <el-upload class="avatar-uploader" action="/api/upload" list-type="picture-card"
             name="wuye_pay_charge" multiple :show-file-list="false"
             :limit="1" :headers="{ enctype: 'multipart/form-data' }" 
@@ -195,7 +195,7 @@
         <el-form-item label="燃气费" prop="name">
           <el-input v-model="temp.ranqi_charge" placeholder="请输入" />
         </el-form-item>
-      <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证" prop="ranqi_pay_charge">
+      <el-form-item label="上传缴费凭证" prop="ranqi_pay_charge">
         <el-upload class="avatar-uploader" action="/api/upload" list-type="picture-card"
             name="ranqi_pay_charge" multiple :show-file-list="false"
             :limit="1" :headers="{ enctype: 'multipart/form-data' }" 
@@ -208,7 +208,7 @@
         <el-form-item label="电费" prop="name">
           <el-input v-model="temp.electric_charge" placeholder="请输入" />
         </el-form-item>
-      <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证" prop="electric_pay_charge">
+      <el-form-item label="上传缴费凭证" prop="electric_pay_charge">
         <el-upload class="avatar-uploader" action="/api/upload" list-type="picture-card"
             name="electric_pay_charge" multiple :show-file-list="false"
             :limit="1" :headers="{ enctype: 'multipart/form-data' }" 
@@ -221,7 +221,7 @@
         <el-form-item label="水费" prop="name">
           <el-input v-model="temp.water_charge" placeholder="请输入" />
         </el-form-item>
-      <el-form-item v-if="dialogStatus == 'update'" label="上传缴费凭证" prop="water_pay_charge">
+      <el-form-item label="上传缴费凭证" prop="water_pay_charge">
         <el-upload class="avatar-uploader" action="/api/upload" list-type="picture-card"
             name="water_pay_charge" multiple :show-file-list="false"
             :limit="1" :headers="{ enctype: 'multipart/form-data' }" 
@@ -231,12 +231,12 @@
         <!-- <el-image v-else class="avatar" fit="fill" :src="defaultAvator"></el-image> -->
         </el-upload>
       </el-form-item>
-        <el-form-item label="状态" prop="status">
+        <el-form-item label="状态" prop="status"  :disabled="power === 'one'">
           <el-select
             v-model="temp.status"
             class="filter-item"
             placeholder="请选择"
-            disabled
+            :disabled="power === 'one'"
           >
             <el-option
               v-for="item in statusOptions"
@@ -340,6 +340,7 @@ export default {
       showReviewer: false,
       showRemark: false,
       detailInfo: { title: "", remark: "" },
+      power: '',
       roons: [],
       users: [],
       temp: {
@@ -414,9 +415,9 @@ export default {
             trigger: "blur",
           },
         ],
-        status: [
-          { required: true, message: "status is required", trigger: "change" },
-        ],
+        // status: [
+        //   { required: true, message: "status is required", trigger: "change" },
+        // ],
       },
       downloadLoading: false,
       imagecropperShow: false,
@@ -426,6 +427,7 @@ export default {
   },
   created() {
     this.getList();
+    this.power =  this.$store.getters.type
   },
   beforeMount() {
     this.getALL()
@@ -577,7 +579,7 @@ export default {
           const tempData = Object.assign({}, this.temp);
           // tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           tempData.source = 'jiaofei'
-          tempData.status = 'published'
+          // tempData.status = 'published'
           // if (tempData.buy_timestamp) {
           //   tempData.buy_timestamp = parseTime(tempData.buy_timestamp)
           // } else if (tempData.use_timestamp) {

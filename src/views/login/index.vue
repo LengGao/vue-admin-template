@@ -74,6 +74,7 @@
         <el-form-item label="联系方式" prop="tel">
           <el-input v-model="temp.tel" placeholder="请输入" />
         </el-form-item>
+        <template v-if="temp.type === 'two' || temp.type === 'super'">
         <el-form-item label="职位" prop="position">
           <el-input v-model="temp.position" placeholder="请输入" />
         </el-form-item>
@@ -86,6 +87,7 @@
         <el-form-item label="离职时间" prop="use_timestamp">
           <el-date-picker v-model="temp.use_timestamp" type="date" value-format="yyyy-MM-dd" placeholder="请选择" />
         </el-form-item>
+        </template>
         <el-form-item label="状态" prop="status">
           <el-select v-model  ="temp.status" class="filter-item" placeholder="请选择">
             <el-option v-for="item in statusOptions" :key="item" :label="statusOptionsTest[item]" :value="item" />

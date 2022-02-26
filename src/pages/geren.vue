@@ -27,7 +27,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm">
-          确定
+          提交修改
         </el-button>
       </el-form-item>
     </el-form>
@@ -80,10 +80,10 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           // tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          if (tempData.buy_timestamp) {
-            tempData.buy_timestamp = parseTime(tempData.buy_timestamp)
+         if (tempData.buy_timestamp) {
+            tempData.buy_timestamp = parseTime(tempData.buy_timestamp, '{y}-{m}-{d}')
           } else if (tempData.use_timestamp) {
-            tempData.buy_timestamp = parseTime(tempData.use_timestamp)
+            tempData.use_timestamp = parseTime(tempData.use_timestamp, '{y}-{m}-{d}')
           }
           updateArticle(tempData).then(() => {
             this.$notify({

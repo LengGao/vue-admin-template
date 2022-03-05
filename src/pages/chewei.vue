@@ -3,7 +3,7 @@
   <div class="app-container">
     <div class="filter-container">
        <el-input v-model="listQuery.name" placeholder="车为主" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.unti" placeholder="单元" style="width: 140px" class="filter-item" @change="handleFilter">
+      <el-select v-model="listQuery.unti" placeholder="车位号" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in unitOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.type" placeholder="类型" style="width: 140px" class="filter-item" @change="handleFilter">
@@ -98,12 +98,12 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="单元号" prop="unti">
+        <el-form-item label="车位号" prop="unti">
           <el-select v-model="temp.unti" class="filter-item" placeholder="请选择">
             <el-option v-for="item in unitOptions" :key="'U_' +item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
-        <el-form-item label="楼栋号" prop="building">
+        <el-form-item label="区域号" prop="building">
           <el-select v-model="temp.building" class="filter-item" placeholder="请选择">
             <el-option v-for="item in buildingOptions" :key="item" :label="item" :value="item" />
           </el-select>

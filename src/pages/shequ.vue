@@ -91,8 +91,8 @@
             <el-option v-for="item in typeOptions" :key="item" :label="typeOptionsTest[item]" :value="item" />
           </el-select>
         </el-form-item>
-           <el-form-item label="业主" prop="uid">
-          <el-select v-model="temp.uid" class="filter-item" placeholder="请选择">
+        <el-form-item label="业主" prop="uid">
+          <el-select v-model="temp.uid" class="filter-item" placeholder="请选择" @onChange="handerCha">
             <el-option v-for="item in users" :key="item.uid" :value="item.uid">
               {{item.name}}-{{item.IDcard}} {{item.tel}}
             </el-option>
